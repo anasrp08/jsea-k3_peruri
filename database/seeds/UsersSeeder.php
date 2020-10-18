@@ -20,29 +20,20 @@ class UsersSeeder extends Seeder
         $adminRole->save();
 
         // Create Member role
-        $beacukaiRole = new Role();
-        $beacukaiRole->name = "operator";
-        $beacukaiRole->display_name = "Operator";
-        $beacukaiRole->save();
+        $pengadaanRole = new Role();
+        $pengadaanRole->name = "pengadaan";
+        $pengadaanRole->display_name = "Pengadaan";
+        $pengadaanRole->save();
 
         $unitKerjaRole = new Role();
-        $unitKerjaRole->name = "unit kerja";
-        $unitKerjaRole->display_name = "Unit Kerja";
+        $unitKerjaRole->name = "unit k3";
+        $unitKerjaRole->display_name = "Unit K3";
         $unitKerjaRole->save();
-
-        $satpamRole = new Role();
-        $satpamRole->name = "pengawas";
-        $satpamRole->display_name = "Pengawas";
-        $satpamRole->save();
-
-
-
-         
-
+ 
         // Create Admin sample
         $admin = new User();
-        $admin->name = 'Admin Limbah';
-        $admin->email = 'admin@limbahperuri';
+        $admin->name = 'Admin';
+        $admin->email = 'admin@jseaperuri';
         
         $admin->password = bcrypt('admin123');
         $admin->avatar = "admin_avatar.jpg";
@@ -51,35 +42,25 @@ class UsersSeeder extends Seeder
         $admin->attachRole($adminRole);
 
         // Create Sample member
-        $bc = new User();
-        $bc->name = 'Operator';
-        $bc->email = 'operator@limbahperuri';
-        
-        $bc->password = bcrypt('operator123');
-        $bc->avatar = "operator_avatar.png";
-        $bc->is_verified = 1;
-        $bc->save();
-        $bc->attachRole($beacukaiRole);
+        $pengadaan = new User();
+        $pengadaan->name = 'Pengadaan';
+        $pengadaan->email = 'pengadaan@jseaperuri'; 
+        $pengadaan->password = bcrypt('pengadaan123');
+        $pengadaan->avatar = "operator_avatar.png";
+        $pengadaan->is_verified = 1;
+        $pengadaan->save();
+        $pengadaan->attachRole($pengadaanRole);
 
         $uk = new User();
-        $uk->name = 'Unit Kerja';
-        $uk->email = 'unitkerja@limbahperuri';
+        $uk->name = 'Unit K3';
+        $uk->email = 'unitk3@jseaperuri';
         
-        $uk->password = bcrypt('unitkerja123');
+        $uk->password = bcrypt('unitk3123');
         $uk->avatar = "operator_avatar.png";
         $uk->is_verified = 1;
         $uk->save();
         $uk->attachRole($unitKerjaRole);
-
-        $pengawas = new User();
-        $pengawas->name = 'Pengawas';
-        $pengawas->email = 'pengawas@limbahperuri';
-        
-        $pengawas->password = bcrypt('pengawas123');
-        $pengawas->avatar = "operator_avatar.png";
-        $pengawas->is_verified = 1;
-        $pengawas->save();
-        $pengawas->attachRole($satpamRole);
+ 
 
       
     }

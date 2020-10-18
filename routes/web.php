@@ -19,12 +19,14 @@ Route::group(['midlleware' => 'web'], function () {
 Auth::routes();
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/dashboard/data', 'HomeController@dataDashboard')->name('dashboard.data');
-Route::post('/dashboard/notifikasi', 'HomeController@dataNotifikasi')->name('notifikasi.data');
+Route::post('/dashboard/data', 'HomeController@dataTender')->name('dashboard.data');
+Route::post('/dashboard/banner', 'HomeController@dataBanner')->name('banner.data');
+Route::post('/tender/insert', 'HomeController@store')->name('tender.store');
+Route::post('/dashboard/banner1', 'HomeController@dataBanner')->name('notifikasi.data');
 
-Route::get('/limbah/entri', 'LimbahController@viewEntri')->name('limbah.entri');
-// Route::get('/limbah/update', 'LimbahController@Update')->name('limbah.update');
-Route::get('/limbah/proses', 'LimbahController@viewProses')->name('limbah.proses');
+Route::get('/evaluasi/daftar', 'EvaluasiController@viewEntri')->name('evaluasi.list');
+Route::post('/evaluasi/data', 'EvaluasiController@index')->name('evaluasi.data'); 
+Route::post('/tender/evaluasi', 'LimbahController@viewProses')->name('limbah.proses');
 Route::post('notifikasi/get', 'HomeController@getNotifikasi')->name('home.notifikasi');
 
 Route::resource('limbah', 'LimbahController');
@@ -65,6 +67,7 @@ Route::post('penghasil/daftar', 'ReportLimbahController@indexPenghasil')->name('
 
 
 Route::get('/kontrak/viewlist', 'ReportLimbahController@viewIndexKontrak')->name('kontrak.listview');
+Route::post('/kontrak/data', 'ReportLimbahController@indexKontrak')->name('kontrak.data');
 Route::get('/penghasil/viewlist', 'ReportLimbahController@viewIndexPenghasil')->name('penghasil.listview');
 Route::get('/limbah/viewlist', 'ReportLimbahController@viewIndex')->name('limbah.listview');
 Route::resource('report', 'ReportLimbahController');

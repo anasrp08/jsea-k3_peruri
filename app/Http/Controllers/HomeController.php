@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laratrust\LaratrustFacade as Laratrust;
-use App\Helpers\QueryHelper; 
-use App\Helpers\UpdKaryawanHelper; 
+// use App\Helpers\QueryHelper; 
+// use App\Helpers\UpdKaryawanHelper; 
 use App\Http\Requests;
-use App\Jadwal;
 use App\Helpers\AppHelper;
+use App\Helpers\AuthHelper; 
 use App\Role;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -35,302 +35,167 @@ class HomeController extends Controller
     {
         // dd(DB::table('cemori.tbl_status')->get());
         // dd(Laratrust::hasRole('Pengawas'));
-        if (Laratrust::hasRole('admin') || Laratrust::hasRole('operator')) {
+        // if (Laratrust::hasRole('admin') || Laratrust::hasRole('operator')) {
 
-            //     // $getYear = DB::table('desain_tahun')->orderBy('tahun','desc')->get();
-            //     // $year=[];
-            //     // for($i=0;$i<count($getYear);$i++){
-            //     //     array_push($year,$getYear[$i]->tahun);
-            //     //     if($getYear[$i]->tahun == '2019'){ 
-            //     //     break;
-            //     //     }
-            //     // }
-            //     // dd($year);
-            //     // $book = Book::all();
+        //     return view('dashboard.dashboard');
 
-            //     // $member = Role::where('name', 'member')->first()->users;
-
-            //     // $borrow = BorrowLog::all();
-            //     // return view('dashboard.admin', compact('author', 'book', 'member', 'borrow'));
-
-            //     return view('dashboard.admin',[
-            //         // 'year'=>$year
-            //     ]);
-            UpdKaryawanHelper::updatePegawai();
-            return view('dashboard.dashboard');
-            
-        } else if(Laratrust::hasRole('unit kerja') ) {
-            UpdKaryawanHelper::updatePegawai();
-            // return view('pemohon.create', QueryHelper::getDropDown());
-            return redirect()->route('pemohon.entri', QueryHelper::getDropDown());
-        }else if(Laratrust::hasRole('pengawas') ) {
-            // dd('tes');
-            UpdKaryawanHelper::updatePegawai();
-            return redirect()->route('pemohon.listview', QueryHelper::getDropDown());
-            // return view('pemohon.list', QueryHelper::getDropDown());
-        }
-
-
+        // } else if(Laratrust::hasRole('unit kerja') ) {
+        //     // UpdKaryawanHelper::updatePegawai();
+        //     // return view('pemohon.create', QueryHelper::getDropDown());
+        //     return redirect()->route('pemohon.entri', QueryHelper::getDropDown());
+        // }else if(Laratrust::hasRole('pengawas') ) {
+        //     // dd('tes');
+        //     // UpdKaryawanHelper::updatePegawai();
+        //     return redirect()->route('pemohon.listview', QueryHelper::getDropDown());
+        //     // return view('pemohon.list', QueryHelper::getDropDown());
+        // }
+        //    dd($this->dataTender());
+        return view('dashboard.dashboard');
         // return view('home');
     }
 
-    public function getNotifikasi()
+    public function dataBanner()
     {
-        // $countKadaluarsa=DB::table('tr_packing')
-        // ->where()
+
+        // $dataKapasitas=DB::table('md_tps')->get(); 
+
+        return response()->json(['error' => 'Data Gagal Disimpan']);
     }
-    public function dashboardKuotaLimbah($tahun){ 
-        $dataKuota=DB::table('md_kuota')->where('tahun',$tahun)->get(); 
-
-        // $arrKuota=new \stdClass();
-        
-
-        // // $datatoArray=$dataPenghasil->groupBy('seksi');
-        // $datalabel=$dataKuota->keyBy('seksi')->keys();
-        // $datavalues=$dataPenghasil->keyBy('jumlah')->keys();
-        // // dd($datavalues);
-        // $arrKuota->labels=$datalabel;
-        // $arrKuota->values=$datavalues;
-
-        return $dataKuota;
-    }
-    public function dashboardKapasitas(){
-
-        $dataKapasitas=DB::table('md_tps')->get(); 
-
-        return $dataKapasitas;
-    }
-    public function dashboardPenghasil(){
-
-        $dataPenghasil=DB::table('tr_headermutasi')
-        ->join('md_namalimbah','tr_headermutasi.idlimbah','md_namalimbah.id')
-        ->join('md_penghasillimbah','tr_headermutasi.idasallimbah','md_penghasillimbah.id')
-        ->select(DB::raw('sum(tr_headermutasi.jumlah) as jumlah'),'md_penghasillimbah.seksi')
-        ->whereYear('tr_headermutasi.created_at', date('Y'))
-        ->whereMonth('tr_headermutasi.created_at', date('m'))
-        ->groupBy('md_penghasillimbah.seksi')
-        ->get(); 
-
-        $arrPenghasil=new \stdClass();
-        
-
-        // $datatoArray=$dataPenghasil->groupBy('seksi');
-        $datalabel=$dataPenghasil->keyBy('seksi')->keys();
-        $datavalues=$dataPenghasil->keyBy('jumlah')->keys();
-        // dd($datavalues);
-        $arrPenghasil->labels=$datalabel;
-        $arrPenghasil->values=$datavalues;
-//         $dataValue=$datatoArray->values();
-//         $dataSludge=[];
-//         $dataAbu=[];
-//         $dataCair=[];
-//         $dataSK=[];
-//         $dataKaleng=[];
-//         $dataDrum=[];
-//         $addArr=new \stdClass();
-
-// // dd(count($dataValue[1]));
-//         for($i=0;$i<count($datalabel);$i++){
-            
-//             if(count($dataValue[$i]) != 6){
-//                 // dd((int)6-count($dataValue[$i]));
-//                 // dd(6-count($dataValue[$i]));
-//                 $tipeLimbah=$dataValue[$i]->keyBy('tipelimbah');
-//                 // dd($tipeLimbah->keys());
-                
-//                 for($j=0;$j< 6 - count($dataValue[$i]);$j++){
-                     
-//                     if(!$tipeLimbah->search('Kaleng')){
-//                         // dd($tipeLimbah->search('Kaleng'));
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Kaleng'; 
-//                         $dataValue[$i]->push($addArr);
-//                     }else if(!$tipeLimbah->keys('Limbah Cair')){
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Limbah Cair';
-//                         $dataValue[$i]->push($addArr);
-//                     }else if(!$tipeLimbah->keys('Abu')){
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Abu';
-//                         $dataValue[$i]->push($addArr);
-//                     } else if(!$tipeLimbah->keys('Sludge')){
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Sludge';
-//                         $dataValue[$i]->push($addArr);
-//                     }else if(!$tipeLimbah->keys('Drum')){
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Drum';
-//                         $dataValue[$i]->push($addArr);
-//                     }else if(!$tipeLimbah->keys('Sampah Kontaminasi')){
-//                         $addArr->jumlah=0; 
-//                         $addArr->tipelimbah='Sampah Kontaminasi';
-//                         $dataValue[$i]->push($addArr);
-//                     }
-                    
-
-//                 }
-
-
-//             }
-
-
-//             // if(){
-
-//             // }
-
-//         }
-
-        // dd($arrPenghasil);
-        return $arrPenghasil;
-    }
-    public function dashboardToBeKadaluarsa(){
-
-        $dataKadaluarsa=DB::table('tr_packing')
-        ->join('md_namalimbah','tr_packing.idlimbah','md_namalimbah.id')
-        ->join('md_tps','tr_packing.idtps','md_tps.id')
-        ->select('md_namalimbah.namalimbah','tr_packing.created_at','tr_packing.kadaluarsa','md_tps.namatps')
-        ->whereRaw('DATE(kadaluarsa) = DATE_ADD(CURDATE(), INTERVAL 7 DAY) OR DATE(kadaluarsa) = DATE_ADD(CURDATE(), INTERVAL 3 DAY)')->get(); 
-        // dd($dataKadaluarsa);
-        return $dataKadaluarsa;
-
-    }
-    public function dataDashboard(Request $request)
+    public function dataTender()
     {
-         
-        $dataKuota=$this->dashboardKuotaLimbah($request->tahun);
-        $dataKadaluarsa=$this->dashboardToBeKadaluarsa();
-        $dataNotifikasi=$this->dashboardToBeKadaluarsa(); 
-        $arrNotifikasi=new \stdClass(); 
-        $arrIsi=[];
-        
-        // $dataIsi=$dataNotifikasi->groupBy('kadaluarsa')->keys()->toArray();
-        $dataNotif=$dataNotifikasi->groupBy('kadaluarsa')->values()->toArray();
-        // $datavalues=$dataPenghasil->keyBy('jumlah')->keys();
-        for($i=0;$i<count($dataNotif);$i++){
-            // $arrNotifikasi->isi=count($dataNotif[$i]);
-            array_push($arrIsi,count($dataNotif[$i]));
-            // dd($dataJumlah);
 
+        $dataEproc = DB::connection('pgsql')->table('prcmts')
+            ->join('prcmt_participants', 'prcmts.id', 'prcmt_participants.prcmt_id')
+            ->join('vendors', 'prcmt_participants.vendor_id', 'vendors.id')
+            ->join('parties', 'vendors.party_id', 'parties.id')
+            ->join('prcmt_docs', 'prcmts.id', 'prcmt_docs.prcmt_id')
+
+            ->select(
+                'prcmts.id as id_tender',
+                'prcmts.number',
+                'prcmts.name',
+                // 'prcmts.desc',
+                'prcmts.state as status_tender',
+                'prcmts.created_at as tender_dibuat',
+                'prcmts.updated_at as tender_update',
+                'prcmt_participants.created_at as participant_dibuat',
+                'prcmt_participants.updated_at as participant_diupdate',
+                'prcmt_participants.state as status_vendor',
+                'parties.full_name as nama_vendor',
+
+                'vendors.id as vendor_id',
+                'prcmt_docs.name as tipe_file',
+                'prcmt_docs.file_uid',
+                'prcmt_docs.file_name',
+                'prcmt_docs.desc as deskripsi_file',
+                'prcmt_docs.created_at as doc_upload'
+            )
+            ->where('prcmts.number', 'like', '%PLJ%')
+            ->where('prcmts.desc', 'like', '%JSEA%')
+            ->where('prcmt_participants.state', '=', 'AWARDED')
+            ->where('prcmt_docs.name', '=', 'JSEA')
+            ->orderBy('prcmts.number', 'desc')
+            ->get();
+        if (request()->ajax()) {
+            return datatables()->of($dataEproc)
+                ->addIndexColumn()
+                ->addColumn('status_review', 'Permohonan Review')
+                ->addColumn('no_jsea', '-')
+                ->addColumn('evaluasi_jsea', '-')
+                ->addColumn('action', '-')
+                ->rawColumns(['action', 'no_jsea', 'status_review'])
+
+                ->make(true);
         }
-        $arrNotifikasi->keys=$dataNotifikasi->groupBy('kadaluarsa')->keys()->toArray();
-        $arrNotifikasi->values=$arrIsi;
-        // dd($arrNotifikasi);
-        // dd($dataNotifikasi);
-        $dataKapasitas=$this->dashboardKapasitas();
-
-        $dataPenghasil=$this->dashboardPenghasil();
-        // $dataKadaluarsa=$this->dashboardToBeKadaluarsa(); 
-        return response()->json([
-            'dataKuota'=>$dataKuota,
-            'dataKapasitas'=>$dataKapasitas,
-            'dataPenghasil'=>$dataPenghasil,
-            'dataKadaluarsa'=>$dataKadaluarsa, 
-            'dataNotifikasi'=>$arrNotifikasi, 
-            ]);
+        // dd($users);
+        return $dataEproc;
     }
-    public function persentage($kapasitasjumlah,$presentage){
+    public function noSurat(){
 
-        $dataCalculate=round(($kapasitasjumlah * (int)$presentage) / (int)100);
-        // dd( $dataCalculate);
-
-        return $dataCalculate;
-
-    }
-    public function dataNotifikasi(Request $request)
-    {
-         
-        $arrNotifikasi=new \stdClass(); 
-        $arrKadaluarsa3=new \stdClass(); 
-        $arrKadaluarsa7=new \stdClass(); 
-        $arrIsi=[];
-        $notifKapasitas=new \stdClass(); 
-        $arrKapasitas=[];
-
-        $dataNotifikasi=$this->dashboardToBeKadaluarsa(); 
-        $dataKapasitas=DB::table('md_tps')
-        ->get();
-        // dd($dataKapasitas);
-
-        for($i=0;$i<count($dataKapasitas);$i++){
-
-            $saldo=(int)$dataKapasitas[$i]->saldo;
+        // dd($idAsalLimbah);
+        $noSuratUnitKerja=DB::table('md_no_jsea')->first(); 
+        
+        // $unitKerja=$noSuratUnitKerja->unit_kerja;
+        $currMonth=date("m");
+        $currYear=date("Y"); 
+        $nomor=(int)$noSuratUnitKerja->no_jsea;
+        function numberToRomanRepresentation($number)
+        {
             
-            $kapasitasjumlah=(int)$dataKapasitas[$i]->kapasitasjumlah;
-            // dd($saldo >= $this->persentage($kapasitasjumlah,90));
-            if($saldo >= $this->persentage($kapasitasjumlah,75) && $saldo <= $this->persentage($kapasitasjumlah,90)){
-                $notifKapasitas=array(
-                    'saldo'=>$saldo,
-                    'tps'=>$dataKapasitas[$i]->namatps,
-                    'status'=>'Waspada',
-                    'kapasitas'=>$dataKapasitas[$i]->kapasitasjumlah,
-                );
-                // $notifKapasitas->saldo=$saldo;
-                // $notifKapasitas->tps=$dataKapasitas[$i]->namatps;
-                // $notifKapasitas->status='Waspada';
-             
-                array_push($arrKapasitas,$notifKapasitas);
-                // dd($arrKapasitas);
-
-            }else if($saldo >= $this->persentage($kapasitasjumlah,90)){
-                $notifKapasitas=array(
-                    'saldo'=>$saldo,
-                    'tps'=>$dataKapasitas[$i]->namatps,
-                    'status'=>'Bahaya',
-                    'kapasitas'=>$dataKapasitas[$i]->kapasitasjumlah,
-                );
-                // $notifKapasitas->saldo=$saldo;
-                // $notifKapasitas->tps=$dataKapasitas[$i]->namatps;
-                // $notifKapasitas->status='Bahaya';
-
-                array_push($arrKapasitas,$notifKapasitas); 
-                // dd($notifKapasitas);
-            }else{
-                $notifKapasitas=null;
-                // array_push($arrKapasitas,$notifKapasitas);
+            $map = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
+            $returnValue = '';
+            while ($number > 0) {
+                foreach ($map as $roman => $int) {
+                    if ($number >= $int) {
+                        $number -= $int;
+                        $returnValue .= $roman;
+                        break;
+                    }
+                }
             }
-
-            
-
+            return $returnValue;
         }
-        // dd($arrKapasitas);
-
-        if(count($dataNotifikasi) == 0){
-            $arrNotifikasi=null;
-        }else{
-           
-            
-            // $dataIsi=$dataNotifikasi->groupBy('kadaluarsa')->keys()->toArray();
-            $dataNotif=$dataNotifikasi->groupBy('kadaluarsa')->values()->toArray();
-            // $datavalues=$dataPenghasil->keyBy('jumlah')->keys();
-           
-            // for($i=0;$i<count($dataNotif);$i++){
-                // $arrNotifikasi->isi=count($dataNotif[$i]);
-                $arrKadaluarsa3=array(
-                    'tanggal'=>$dataNotif[0][0]->kadaluarsa,
-                    'jumlah'=>count($dataNotif[0]),
-                    'status'=>'Waspada'
-                );
-
-                $arrKadaluarsa7=array(
-                    'tanggal'=>$dataNotif[1][0]->kadaluarsa,
-                    'jumlah'=>count($dataNotif[1]),
-                    'status'=>'Bahaya'
-                );
-
-                array_push($arrIsi,$arrKadaluarsa3);
-                array_push($arrIsi,$arrKadaluarsa7);
-                // dd($dataJumlah);
-    
-            // }
-            $arrNotifikasi->keys=$dataNotifikasi->groupBy('kadaluarsa')->keys()->toArray();
-            $arrNotifikasi->values=$arrIsi;
-        }
+        $no=sprintf('%03d', $nomor);
+       
+        $concatFormat=$no."/".numberToRomanRepresentation($currMonth)."/". $currYear;
+        $nomor++;
+        DB::table('md_no_jsea')->update(['no_jsea' => $nomor]); 
+        return  $concatFormat; 
+    }
+    public function store(Request $request)
+    {
+        // dd($request->all());
+        $username=AuthHelper::getAuthUser()[0]->email;
         
+        $no_jsea=$this->noSurat(); 
+        $dataTender = array(
+
+            'id_tender'         =>  $request->id_tender,
+            'no_pr'             =>  $request->no_pr,
+            'no_tender'         =>  $request->number,
+            'no_sppj'           =>  $request->no_sppj,
+            'no_jsea'           =>  $no_jsea,
+            'tgl_sppj'          =>  $request->tender_dibuat,
+            'path_file'			=>  $request->file_uid,
+            'file_name'         =>  $request->file_name,
+            'tgl_upload'        =>  $request->doc_upload,
+            'desc_file'         =>  $request->deskripsi_file,
+            'id_vendor'         =>  $request->vendor_id,
+            'status_vendor'     =>  $request->status_vendor,
+            'status_tender'     =>  $request->status_tender,
+            'status_review'     =>  $request->status_review,
+            'vendor'            =>  $request->nama_vendor,
+            'nama_pekerjaan'    =>  $request->name,
+            'updated_by'        =>  $username, 
+            'tgl_tender'        =>  $request->tender_dibuat,
+            'tgl_updtender'     =>  $request->tender_dibuat,
+            'created_at'        =>  date('Y-m-d')
+           
+        ); 
+        $insertHeader=DB::table('tr_daftar_jsea')->insertGetId($dataTender,true);
+
         
+        // $dataEvaluasi=array(
+        //     'id_tender'           =>  $request->id_tender,
+        //     'id_daftar'         =>  $insertHeader
+        // );
+
+        $dataStatus=array(
+            'id_tender'         =>  $request->id_tender,
+            'id_daftar'         =>  $insertHeader,
+            'status'            =>  'Permohonan Review',
+            'created_by'         =>  $username
+        );
+        // $insertEvaluasi=DB::table('tr_evaluasi_jsea')->insert($dataEvaluasi); 
+        $insertStatus=DB::table('tr_status_jsea')->insert($dataStatus); 
+        
+    try {
+        // UpdtSaldoHelper::updateSaldoNamaLimbah($row['nama_limbah'],$row['jmlhlimbah']);
+        return response()->json(['success' => 'Data Berhasil Di Simpan']);
+        
+    } catch (Exception $e) {
+        return response()->json(['error' => 'Data Gagal Disimpan']);
+    }
          
-        return response()->json([ 
-            'dataNotifikasi'=>$arrNotifikasi, 
-            'notifikasiKapasitas'=>$arrKapasitas, 
-            ]);
     }
 }
