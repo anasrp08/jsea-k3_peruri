@@ -22,7 +22,9 @@ class AuthHelper
         }else{
             $getUserid = auth()->user()->id;
            
-            return $getRoleUser=DB::table('users')->join('role_user', 'role_user.user_id', '=', 'users.id')
+            return $getRoleUser=DB::table('users')
+            ->join('role_user', 'role_user.user_id', '=', 'users.id')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
        ->where('users.id', $getUserid)
       
        ->get();

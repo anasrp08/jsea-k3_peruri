@@ -14,7 +14,7 @@
 
                 <h3 class="profile-username text-center" id='nama_tender'>Nina Mcintire</h3>
 
-                <p class="text-muted text-center" id="vendor" >Software Engineer</p>
+                <b><p class="text-muted text-center" id="vendor" >Software Engineer</p></b>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
@@ -34,10 +34,13 @@
                   </li>
                   <li class="list-group-item">
                     <b>Dokumen JSEA</b>
+                    <form method="post" id="save_upload" enctype="multipart/form-data">
+                      @csrf
                     <input type="file" class="float-right form-control" id='file_jsea' name="file_jsea" accept=".pdf" multiple />
                      
                   <button type="submit" id="down_dok_jsea" class="float-right btn btn-primary"
                       value="Upload">Download</button>
+                    
                      
                   </li>
                   <li class="list-group-item">
@@ -58,7 +61,8 @@
 
                 </ul>
 
-                <a href="#" class="btn btn-primary btn-block" id='simpan'><b>Kirim</b></a>
+                <button  class="btn btn-primary btn-block" id='simpan'><b>Kirim</b></button>
+              </form>
               </div>
               <!-- /.card-body -->
             </div>

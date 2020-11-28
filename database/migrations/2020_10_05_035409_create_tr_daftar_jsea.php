@@ -35,6 +35,7 @@ class CreateTrDaftarJsea extends Migration
             $table->string('updated_by')->nullable(); 
             $table->date('tgl_tender')->nullable();
             $table->date('tgl_updtender')->nullable();
+            $table->date('tgl_review')->nullable();
             $table->timestamps();
         });
     }

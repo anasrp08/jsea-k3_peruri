@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>SIMBAH</title>
+    <title>Review JSEA</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ asset('/adminlte3/plugins/fontawesome-free/css/all.min.css') }}">
@@ -48,10 +48,10 @@
 
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
+                    {{-- <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
                         <span class="badge badge-danger navbar-badge" id="jumlahnotif">0</span>
-                    </a>
+                    </a> --}}
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right "id='divkapasitas'>
                         {{-- <span class="dropdown-item dropdown-header" id='jmlhnotif'>0</span> --}}
                         {{-- <div class="dropdown-divider"></div> --}}
@@ -74,11 +74,7 @@
                             Data</a> --}}
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
-                        <i class="fas fa-th-large"></i>
-                    </a>
-                </li>
+                
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -89,7 +85,7 @@
             <a href="../index3.html" class="brand-link">
                 <img src="{{ asset('/img/logo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                     style="opacity: .8">
-                <span class="brand-text font-weight-light">SiMbah</span>
+                <span class="brand-text font-weight-light">JSEA Reviewer</span>
             </a>
 
             <!-- Sidebar -->
@@ -192,6 +188,8 @@
         <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
         <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.bootstrap4.min.js"></script>
         <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+        
+        
         <script>
             $(document).ready(function () {
                 var pProv = {

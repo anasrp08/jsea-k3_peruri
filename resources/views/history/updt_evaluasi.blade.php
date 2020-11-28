@@ -23,7 +23,7 @@
             <h3 class="card-title-center text-center">Memo Evaluasi Form JSEA Rekanan</h3>
         </div>
         <div class="card-body">
-            @include('history.f_evaluasi')
+            @include('history.f_updt_evaluasi')
         </div>
     </div>
     </div>
@@ -56,10 +56,10 @@
             tes: 'tes'
         }
 
-        $('#send').on('click', function (event) {
+        $('#send1').on('click', function (event) {
             event.preventDefault(); 
             console.log('tes')
-            $('#action').val('save')
+            $('#action').val('update')
             var paramObj={
                 pelaksanaan:$('#pelaksanaan').val(),
                 pelindung:$('#pelindung').val(),
@@ -123,7 +123,7 @@
             event.preventDefault();
             $('#action').val('save')
                 $.ajax({
-                    url: "{{ route('evaluasi.save') }}",
+                    url: "{{ route('evaluasi.update') }}",
                     method: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

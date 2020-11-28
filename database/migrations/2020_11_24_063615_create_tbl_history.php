@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrEvaluasiJsea extends Migration
+class CreateTblHistory extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTrEvaluasiJsea extends Migration
      */
     public function up()
     {
-        Schema::create('tr_evaluasi_jsea', function (Blueprint $table) {
-            $table->bigIncrements('id'); 
+        Schema::create('tbl_history', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->text('id_tender')->nullable();
             $table->bigInteger('id_daftar')->unsigned()->nullable();
             $table->foreign('id_daftar')->references('id')->on('tr_daftar_jsea')->onDelete('cascade');
-            $table->text('catatan')->nullable();
-            $table->string('kriteria')->nullable();
+   
             $table->string('status')->nullable();
             $table->string('created_by')->nullable(); 
             $table->string('np')->nullable(); 
@@ -34,6 +33,6 @@ class CreateTrEvaluasiJsea extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tr_evaluasi_jsea');
+        Schema::dropIfExists('tbl_history');
     }
 }

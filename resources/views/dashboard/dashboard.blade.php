@@ -4,9 +4,10 @@
 <style>
     #tbl_jsea tbody tr {
 
-cursor: pointer;
-}
-    </style>
+        cursor: pointer;
+    }
+
+</style>
 {{-- <div class="container"> --}}
 <section class="col-lg-12 connectedSortable">
     <div class="card card-primary card-tabs">
@@ -14,14 +15,18 @@ cursor: pointer;
             <h4 id='title_konfirmasi' class="modal-title">Dashboard</h4>
         </div>
         <div class="card-body">
-            
-            @include('dashboard.banner') 
-            @include('dashboard.tbl_daftar_jsea') 
-            @include('dashboard.detail') 
+
+            @include('dashboard.banner')
+            @if (Auth::check())
+            @role(['admin','pengadaan'])
+            @include('dashboard.tbl_daftar_jsea')
+            @endrole
+            @endif
+            @include('dashboard.detail')
         </div>
 
     </div>
-    </div> 
+    </div>
 </section>
 {{-- </div> --}}
 
@@ -32,13 +37,13 @@ cursor: pointer;
 <script src="https://code.highcharts.com/highcharts-more.js"></script> --}}
 
 <script>
-    $(document).ready(function () { 
+    $(document).ready(function () {
         var table = $('#tbl_jsea').DataTable({
             processing: true,
             serverSide: true,
             scrollCollapse: true,
             scrollX: true,
-            paging:true,
+            paging: true,
             dom: '<"right">lrtip<"clear">',
             // buttons: [{
             //         text: 'Terima',
@@ -99,6 +104,8 @@ cursor: pointer;
                 },
                 data: function (d) {
 
+                    d.tahun=new Date().getFullYear()
+
 
 
 
@@ -106,8 +113,8 @@ cursor: pointer;
                 }
             },
             // bFilter: false,
-           
-                       
+
+
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -119,13 +126,14 @@ cursor: pointer;
                     name: 'number'
                 },
                 {
-                    data: 'no_jsea',
-                    name: 'no_jsea'
+                    data: 'no_sppj',
+                    name: 'no_sppj'
                 },
-                {
-                    data: 'no_jsea',
-                    name: 'no_jsea'
-                },
+                // {
+                //     data: 'no_jsea',
+                //     name: 'no_jsea'
+                // },
+                
                 {
                     data: 'name',
                     name: 'name'
@@ -133,6 +141,38 @@ cursor: pointer;
                 {
                     data: 'status_tender',
                     name: 'status_tender'
+                },
+
+
+                {
+                    data: 'nama_vendor',
+                    name: 'nama_vendor'
+                },
+
+
+
+                // {
+                //     data: 'doc_upload',
+                //     name: 'doc_upload',
+                //     render: function (data, type, row) {
+                //         if (data == null || data == "-" || data == "0000-00-00 00:00:00" ||
+                //             data == "NULL") {
+                //             return '<span>-</span>'
+                //         } else {
+                //             return moment(data).format('DD/MM/YYYY');
+                //         }
+
+                //     }
+                // },
+                {
+                    data: 'status_review',
+                    name: 'status_review',
+                    render: function (data, type, row) {
+
+                        return '<span class="badge badge-info">Belum Review</span>'
+
+
+                    }
                 },
                 {
                     data: 'tender_dibuat',
@@ -160,41 +200,7 @@ cursor: pointer;
 
                     }
                 },
-                
-                {
-                    data: 'nama_vendor',
-                    name: 'nama_vendor'
-                },
-               
-                {
-                    data: 'file_uid',
-                    name: 'file_uid'
-                },
-                
-                {
-                    data: 'doc_upload',
-                    name: 'doc_upload',
-                    render: function (data, type, row) {
-                        if (data == null || data == "-" || data == "0000-00-00 00:00:00" ||
-                            data == "NULL") {
-                            return '<span>-</span>'
-                        } else {
-                            return moment(data).format('DD/MM/YYYY');
-                        }
 
-                    }
-                },
-                {
-                    data: 'status_review',
-                    name: 'status_review',
-                    render: function (data, type, row) {
-                       
-                        return '<span class="badge badge-info">Belum Review</span>'
-                     
-
-                    }
-                },
-                 
                 // {
                 //     data: 'action',
                 //     name: 'action',
@@ -207,14 +213,14 @@ cursor: pointer;
                 //        } 
                 //    },
 
-                   
+
                 //     orderable: false
 
                 // }
             ]
         });
-        var pProv={
-            tes:'tes'
+        var pProv = {
+            tahun: new Date().getFullYear()
         }
         $.ajax({
             url: "{{ route('banner.data') }}",
@@ -228,7 +234,7 @@ cursor: pointer;
             dataType: "json",
 
             success: function (data) {
-                 
+
                 // updateChart(dataKapasitas[6].saldo)
             }
         });
@@ -236,13 +242,13 @@ cursor: pointer;
             user_id = $(this).data('id');
             // $("#success-alert").hide();
             isVisible('pengadaan')
-          
+
             var data = table.row($(this).closest('tr')).data();
             console.log(data)
-            var tgl_dibuat=moment(data.tender_dibuat).format('DD/MM/YYYY');
-            var tgl_update=moment(data.tender_update).format('DD/MM/YYYY');
-            
-            var tgl_review=moment().format('DD/MM/YYYY');
+            var tgl_dibuat = moment(data.tender_dibuat).format('DD/MM/YYYY');
+            var tgl_update = moment(data.tender_update).format('DD/MM/YYYY');
+
+            var tgl_review = moment().format('DD/MM/YYYY');
             $('#nama_tender').text(data.name);
             $('#vendor').text(data.nama_vendor);
             $('#no_tender').text(data.number);
@@ -266,37 +272,38 @@ cursor: pointer;
             $('#modaldetail').modal();
 
         });
-        function isVisible(isVisible){
-            if(isVisible=='k3'){
-                $('#file_jsea').hide() 
+
+        function isVisible(isVisible) {
+            if (isVisible == 'k3') {
+                $('#file_jsea').hide()
                 $('#down_dok_jsea').show()
-            }else{
+            } else {
                 $('#file_jsea').show()
                 $('#down_dok_jsea').hide()
             }
 
-            
+
         }
         // $('#simpan').on('click', function () {
         //     isVisible('k3')
         // })
-        function goToReview(id){
+        function goToReview(id) {
             // var url = '{{ route("dashboard.data",":id")}}';
             url = url.replace(':id', id);
             document.location.href = url;
         }
         $('#lihat').on('click', function () {
-          
+
             isVisible('k3')
         })
         $('#review').on('click', function () {
-           
+
             isVisible('k3')
         })
         $('#accept').on('click', function () {
             toastr.success('status update', 'Tersimpan', {
-                                timeOut: 5000
-                            });
+                timeOut: 5000
+            });
         })
         $(document).on('click', '.terima', function () {
             user_id = $(this).data('id');
@@ -318,13 +325,13 @@ cursor: pointer;
             user_id = $(this).data('id');
             // $("#success-alert").hide();
             isVisible('pengadaan')
-          
+
             var data = table.row($(this).closest('tr')).data();
             console.log(data)
-            var tgl_dibuat=moment(data.tender_dibuat).format('DD/MM/YYYY');
-            var tgl_update=moment(data.tender_update).format('DD/MM/YYYY');
-            
-            var tgl_review=moment().format('DD/MM/YYYY');
+            var tgl_dibuat = moment(data.tender_dibuat).format('DD/MM/YYYY');
+            var tgl_update = moment(data.tender_update).format('DD/MM/YYYY');
+
+            var tgl_review = moment().format('DD/MM/YYYY');
             $('#nama_tender').text(data.name);
             $('#vendor').text(data.nama_vendor);
             $('#no_tender').text(data.number);
@@ -337,62 +344,147 @@ cursor: pointer;
             $('#status_tender').text(data.status_tender);
             $('#status_review').text(data.status_review);
             $('#tgl_review').text(tgl_review);
-             
+
             $('#modaldetail').modal();
         });
 
-        $('#simpan').on('click', function () {
+        $('#save_upload').on('submit', function (event) {
+            event.preventDefault();
             var output = [];
-                        var jsonData = {}
-                        var id = [] 
-                        var dataSelected = [] 
-                        var data1 = table.rows({
-                            selected: true
-                        }).data()
-                        console.log(data1[0]) 
+            var jsonData = {}
+            var id = []
+            var dataSelected = []
+            var data1 = table.rows({
+                selected: true
+            }).data()
+            data1[0].file_jsea = $('#file_jsea').prop('files')[0]
+            console.log(data1[0])
 
-                        url="{{ route('tender.store') }}"
-                        $.ajax({
-                            url: url,
-                            method: "POST",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                    'content')
-                            },
-                            data: data1[0],
-                            // contentType: 'json',
-                            // cache: false,
-                            // processData: false,
-                            // dataType: "json",
-                            beforeSend: function () {
-                                $('#saveentri').text('proses menyimpan...');
-                            },
-                            success: function (data) {
-                                // console.log(data)
-                                if (data.errors) {
-                                    toastr.success(data.errors, 'Success', {
-                                        timeOut: 5000
-                                    });
-                                }
-                                if (data.success) {
-                                    toastr.success(data.success, 'Success', {
-                                        timeOut: 5000
-                                    });
-                                    $('#daftar_pemohon').DataTable().ajax.reload();
-                                    // $('#counterentries').text(data.count);
+            var form = new FormData(this)
+            form.append('data', JSON.stringify(data1[0]))
 
-                                    $('#saveentri').text('Simpan');
-                                    // $('#tblorder').DataTable().ajax.reload();
-                                    // renderTgl()
+            url = "{{ route('tender.store') }}"
+            $.ajax({
+                url: url,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+                data: form,
+                contentType: false,
+                // cache: false,
+                processData: false,
+                // dataType: "json",
+                beforeSend: function () {
+                    $('#simpan').text('proses menyimpan...');
+                },
+                success: function (data) {
+                    // console.log(data)
+                    if (data.errors) {
 
-                                }
+                        toastr.success(data.errors, 'Gagal Menyimpan', {
+                            timeOut: 5000
+                        });
+                    }
+                    if (data.success) {
+                        // toastr.success(data.success, 'Success', {
+                        //     timeOut: 5000
+                        // });
+                        var id_tender_db=data.id_tender_db
+                        var no_tender=data1[0].number
+                        var status_kirim=data.success
 
-                            }
-                        })
-                        $('#np').val('').change()
-                        $('#modalconfirm').modal('toggle')
+                        sendMail(id_tender_db, no_tender,status_kirim,'#simpan')
+                       
+                    } 
+                }
+            })
+            $('#np').val('').change()
+            $('#modalconfirm').modal('toggle')
         })
-       
+        function sendMail(id_tender_db, no_tender,status_kirim,button){
+            var paramData={
+                id_tender:id_tender_db,
+                no_tender:no_tender,
+                unit_kerja:"k3",
+                
+            }
+            $.ajax({
+                url: "{{ route('mail.send')}}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: paramData, 
+                beforeSend: function () {
+                    $(button).text('mengirim email...');
+                },
+                success: function (data) {
+                    var html = '';
+                    console.log(data) 
+                    if (data.success) {
+                        toastr.success(data.success+" & "+status_kirim, 'Terkirim', {
+                            timeOut: 5000
+                        }); 
+                        $('#tbl_jsea').DataTable().ajax.reload();
+                        // $('#simpan').text('Simpan');
+                        $(button).text('Kirim');
+                        $('#modaldetail').modal('toggle'); 
+
+                        
+                    }
+
+                }
+            }) 
+        }
+        var paramData = {
+            tahun: new Date().getFullYear()
+        }
+        $.ajax({
+            url: "{{ route('banner.data') }}",
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                    'content')
+            },
+            data: paramData,
+            // contentType: false,
+            // cache: false,
+            // processData: false,
+            // dataType: "json",
+            beforeSend: function () {
+                $('#saveentri').text('proses menyimpan...');
+            },
+            success: function (data) {
+                console.log(data)
+                $('#belumreview').text(data.dataBlmReview)
+                $('#jmlhpermintaan').text(data.dataPermintaan)
+                var persenApprove=Math.round(data.persenApprove)
+                var persenEvaluasi=Math.round(data.persenEvaluasi)
+                var persenTerima=Math.round(data.persenTerima)
+                
+                // $('#openreview').text(data.dataOpenReview)
+                $('#onprogress').text(data.dataOnProgressReview)
+                $('#approve').text(data.dataApprove)
+                $('#evaluasi').text(data.dataEvaluasi)
+                $('#persenevaluasi').text(data.dataEvaluasi+' dari '+data.dataPermintaan)
+                $('#persenapprove').text(data.dataApprove+' dari '+data.dataPermintaan)
+                $('#persenterima').text(data.dataDiterima+' dari '+data.dataPermintaan)
+                
+                $('#progbarapprove').css({"width":persenApprove+"%"});
+                $('#progbarevaluasi').css({"width":persenEvaluasi+"%"});
+                $('#progbarterima').css({"width":persenTerima+"%"});
+                
+                $('#openreview').text(data.dataOpenPermintaan)
+                
+                
+                $('#diterimapengadaan').text(data.dataDiterima)
+
+
+            }
+        })
+
         // updateData(cair, ["Polos", "Ada"], [dataPieChart[0],dataPieChart[1]])
     })
 

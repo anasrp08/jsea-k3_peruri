@@ -1,30 +1,31 @@
 <div class="col-md-12">
     <div class="card card-info">
         <div class="card-header">
-            {{-- <button type="button" name="save" id="save" class="btn btn-success "><i class="fa  fa-save"></i>
-                Save</button> --}}
-                <h5 id='title_konfirmasi' class="modal-title">Daftar Form JSEA</h5>
+            
+                <button type="button" name="save" id="save" class="btn btn-success "><i class="fa fa-sync-alt"></i>
+                    Refresh</button>
         </div>
         <div class="card-body">
-            <table id="tbl_jsea" class="table table-bordered table-striped" style="width:100%;" >
+            <table id="tbl_detail_evaluasi" class="table table-bordered table-striped" style="width:100%;" >
                 <thead>
                     <tr>
                         <th>No. </th> 
-                        <th>No. Tender</th> 
-                        <th>No. SPPJ</th> 
-                        {{-- <th>No. JSEA </th> --}}
-                        <th>Nama Tender </th>
-                        <th>Status Tender</th>
-                       
-                        <th>Vendor</th>    
-                        <th>Status Review</th>
-                        <th>Tgl. Tender Dibuat</th>
-                        <th>Tgl. Tender Update</th> 
+                        <th>Kriteria</th> 
+                        <th>Catatan</th> 
+                        <th>Tanggal Review</th>  
                     </tr>
                 </thead>
                  
             </table>
+            <div class="box-footer text-center">
+
+                <button type="button" name="close" id="close" class="btn btn-info "><i class="fa fa-close"></i>
+                    Close
+                </button>
+            </div>
         </div>
+       
+        
     </div>
 </div>
 

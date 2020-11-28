@@ -474,18 +474,15 @@
                 <th class="headeruji">KRITERIA</th>
                 <th class="headeruji" colspan="2">CATATAN EVALUASI UNTUK PERBAIKAN</th>
             </tr>
-            @foreach($dataEvaluasi as $data)
+            {{-- @foreach($dataEvaluasi as $data) --}}
             <tr>
-                <td class="no">{{$loop->iteration}}</td>
-                <td class="namalimbah">{{$data->status}}</td>
+                <td class="no">1</td>
+                <td class="namalimbah">-</td>
                 {{-- <td class="catatan1" colspan="2">{{$data->catatan}}</td> --}}
-                <td class="catatan1" colspan="2"><?php
-                    
-                    echo htmlspecialchars_decode($data->catatan);
-                    ?></td>
+                <td class="catatan1" colspan="2">-</td>
 
             </tr>
-            @endforeach
+            {{-- @endforeach --}}
 
         </table>
         <table class="table2">

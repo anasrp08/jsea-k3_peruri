@@ -1,11 +1,14 @@
 <div class="col-md-12">
     <div class="card card-info">
         <div class="card-header">
-            {{-- <button type="button" name="save" id="save" class="btn btn-success "><i class="fa  fa-save"></i>
-                Save</button> --}}
-                <h5 id='title_konfirmasi' class="modal-title">Daftar Form JSEA</h5>
+                <h3 class="card-title-center text-center">Daftar Tender</h3>
+                <button type="button" name="refresh" id="refresh" class="btn btn-success "><i class="fa fa-sync-alt"></i>
+                    Refresh</button>
+                {{-- <h5 id='title_konfirmasi' class="card-title-center">Daftar Form JSEA</h5> --}}
+               
         </div>
         <div class="card-body">
+           
             <table id="tbl_evaluasi" class="table table-bordered table-striped" style="width:100%;" >
                 <thead>
                     <tr>

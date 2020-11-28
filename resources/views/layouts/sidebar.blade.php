@@ -1,5 +1,5 @@
-@if (Auth::check())
-@role(['admin','operator'])
+{{-- @if (Auth::check())
+@role(['admin','operator']) --}}
 <li class="nav-item">
     <a href="{{ url('/') }}" class="nav-link">
         <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -8,11 +8,29 @@
 </li>
 <li class="nav-item">
     <a href="{{ route('evaluasi.list') }}" class="nav-link">
-        <i class="far fa-circle nav-icon"></i>
+        {{-- <i class="far fa-clipboard-list nav-icon"></i> --}}
+        <i class="fas fa-clipboard-list nav-icon"></i>
         <p>Daftar Tender</p>
     </a>
 </li>
-@endrole
+<li class="nav-item">
+    <a href="{{ route('evaluasi.list') }}" class="nav-link">
+        {{-- <i class="far fa-clipboard-list nav-icon"></i> --}}
+        <i class="fas fa-clipboard-list nav-icon"></i>
+        <p>Report</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{{ route('manage.user_email') }}" class="nav-link">
+        {{-- <i class="far fa-clipboard-list nav-icon"></i> --}}
+        <i class="fas fa-clipboard-list nav-icon"></i>
+        <p>Tambah Penerima Email</p>
+    </a>
+</li>
+{{-- @endrole --}}
+ 
+
+
  
 {{-- <li class="nav-item has-treeview">
     <a href="#" class="nav-link">
@@ -52,5 +70,5 @@
           {{ csrf_field() }}
       </form>
   </li>
-  @endif
+  {{-- @endif --}}
   

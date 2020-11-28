@@ -25,61 +25,30 @@ Route::post('/tender/insert', 'HomeController@store')->name('tender.store');
 Route::post('/dashboard/banner1', 'HomeController@dataBanner')->name('notifikasi.data');
 
 Route::get('/evaluasi/daftar', 'EvaluasiController@viewEntri')->name('evaluasi.list');
+Route::get('/evaluasi/create_eval/{id}', 'EvaluasiController@viewEvaluasi')->name('evaluasi.buat');
+Route::get('/evaluasi/detail_tender/{id}', 'EvaluasiController@viewDetalEvaluasi')->name('evaluasi.detailjsea');
+
 Route::post('/evaluasi/data', 'EvaluasiController@index')->name('evaluasi.data'); 
+Route::post('/evaluasi/detail_jsea', 'EvaluasiController@getDataTender')->name('evaluasi.detail_jsea'); 
+Route::post('/evaluasi/detail_evaluasi', 'EvaluasiController@showEvaluasi')->name('evaluasi.detail'); 
+Route::post('/evaluasi/update_evaluasi', 'EvaluasiController@updateEvaluasi')->name('evaluasi.update'); 
+Route::post('/evaluasi/diterima_evaluasi', 'EvaluasiController@updateDiterima')->name('evaluasi.diterima'); 
+
+Route::post('/evaluasi/posting_evaluasi', 'EvaluasiController@updatePosting')->name('evaluasi.update_posting');  
+Route::post('/evaluasi/save_data', 'EvaluasiController@store')->name('evaluasi.save'); 
+
+
+Route::get('formulir/cetak/{id}', 'FormLimbahController@cetakFormulir')->name('formulir.cetak'); 
+Route::resource('formulir', 'FormLimbahController');
+
 Route::post('/tender/evaluasi', 'LimbahController@viewProses')->name('limbah.proses');
 Route::post('notifikasi/get', 'HomeController@getNotifikasi')->name('home.notifikasi');
 
-Route::resource('limbah', 'LimbahController');
-Route::post('limbah/list', 'LimbahController@index')->name('limbah.list');
-Route::post('limbah/update', 'LimbahController@update') -> name('limbah.update');
-Route::get('viewlist', 'LimbahController@viewIndex')->name('limbah.listview');
+Route::post('/kirimemail','JseaMailController@index')->name('mail.send');
 
-Route::get('/pemohon/viewlist', 'PemohonController@viewIndex')->name('pemohon.listview');
-Route::get('pemohon/entri', 'PemohonController@viewEntri')->name('pemohon.entri');
-Route::post('pemohon/list', 'PemohonController@index')->name('pemohon.list');
-Route::post('pemohon/terima', 'PemohonController@updatevalid') -> name('pemohon.updatevalid');
-Route::post('pemohon/validasi', 'PemohonController@updatedValidSatpam') -> name('satpam.valid');
-Route::resource('pemohon', 'PemohonController');
-
-Route::post('penyimpanan/list', 'PenyimpananLimbahController@index')->name('penyimpanan.list');
-Route::post('penyimpanan/update', 'PenyimpananLimbahController@update') -> name('penyimpanan.update');
-Route::get('viewlist', 'PenyimpananLimbahController@viewIndex')->name('penyimpanan.listview');
-Route::post('penyimpanan/updatepack', 'PenyimpananLimbahController@updatepack') -> name('penyimpanan.updatepack');
-Route::resource('penyimpanan', 'PenyimpananLimbahController');
-
-Route::post('pemrosesan/list', 'PemrosesanLimbahController@index')->name('pemrosesan.list');
-Route::post('pemrosesan/detaillist', 'PemrosesanLimbahController@detaillist')->name('pemrosesan.detaillist');
-Route::post('pemrosesan/proses', 'PemrosesanLimbahController@proses') -> name('pemrosesan.proses');
-Route::get('pemrosesan/viewlist', 'PemrosesanLimbahController@viewIndex')->name('pemrosesan.listview');
-Route::resource('pemrosesan', 'PemrosesanLimbahController');
-
-
-
-Route::post('report/list', 'ReportLimbahController@index')->name('limbah.list');
-Route::post('report/update', 'ReportLimbahController@update') -> name('limbah.update');
-Route::get('neraca/viewlist', 'ReportLimbahController@viewIndexNeraca')->name('neraca.listview');
-Route::post('neraca/daftar', 'ReportLimbahController@indexNeraca')->name('neraca.daftar');
-Route::get('/kadaluarsa/viewlist', 'ReportLimbahController@viewIndexKadaluarsa')->name('kadaluarsa.listview');
-Route::get('/kapasitas/viewlist', 'ReportLimbahController@viewIndexKapasitas')->name('kapasitas.listview');
-Route::post('kapasitas/daftar', 'ReportLimbahController@indexKapasitas')->name('kapasitas.daftar');
-Route::get('penghasil/viewlist', 'ReportLimbahController@viewIndexPenghasil')->name('penghasil.listview');
-Route::post('penghasil/daftar', 'ReportLimbahController@indexPenghasil')->name('penghasil.daftar');
-
-
-Route::get('/kontrak/viewlist', 'ReportLimbahController@viewIndexKontrak')->name('kontrak.listview');
-Route::post('/kontrak/data', 'ReportLimbahController@indexKontrak')->name('kontrak.data');
-Route::get('/penghasil/viewlist', 'ReportLimbahController@viewIndexPenghasil')->name('penghasil.listview');
-Route::get('/limbah/viewlist', 'ReportLimbahController@viewIndex')->name('limbah.listview');
-Route::resource('report', 'ReportLimbahController');
-
-Route::get('formulir/viewlist', 'FormLimbahController@viewIndex')->name('formulir.listview');
-Route::post('formulir/daftar', 'FormLimbahController@index')->name('formulir.daftar');
-Route::get('formulir/cetak/{id}', 'FormLimbahController@cetakFormulir')->name('formulir.cetak'); 
-// Route::get('/footballerdetail/GeneratePDFBA/{id}','JadwalController@GeneratePDFBA');
-Route::resource('formulir', 'FormLimbahController');
-
- 
-Route::post('limbah/getnamalimbah', 'LimbahController@getNama')->name('limbah.getnama');
-Route::post('limbah/getsatuanlimbah', 'LimbahController@getSatuan')->name('limbah.getsatuan'); 
-
+Route::get('/manage/user_email', 'MDUserController@viewEntri')->name('manage.user_email');
+Route::post('/manage/emaildata', 'MDUserController@index')->name('user_email.data');
+Route::post('/manage/simpan', 'MDUserController@store')->name('user_email.simpan'); 
+Route::post('/manage/update', 'MDUserController@update')->name('user_email.update'); 
+Route::get('/manage/destroy/{id}', 'MDUserController@destroy');
 });

@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use DateTime;
-use Carbon\Carbon;
+use DateTime; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; 
 use App\Helpers\AppHelper; 
 use App\Helpers\QueryHelper;
+use Carbon\Carbon;
  
 use Redirect;
 use Validator;
@@ -189,69 +189,97 @@ class FormLimbahController extends Controller
     {
       
         setlocale(LC_TIME, 'id');
-        
-        $dataFormulirLimbah=DB::table('tr_headermutasi')
-            ->join('tr_detailmutasi', 'tr_headermutasi.id', '=', 'tr_detailmutasi.idmutasi')
-            ->join('md_namalimbah', 'tr_headermutasi.idlimbah', '=', 'md_namalimbah.id')
-            ->join('md_penghasillimbah', 'tr_headermutasi.idasallimbah', '=', 'md_penghasillimbah.id')
-            ->join('md_jenislimbah', 'tr_headermutasi.idjenislimbah', '=', 'md_jenislimbah.id')
-            ->select('tr_headermutasi.no_surat',
-            'tr_headermutasi.created_at as tgldibuat',
-            'tr_headermutasi.jumlah',
-            'tr_headermutasi.keterangan',
-            'tr_headermutasi.maksud',
-            'md_jenislimbah.jenislimbah',
-            'md_namalimbah.namalimbah',
-            'md_penghasillimbah.seksi',
-            'tr_headermutasi.maksud',
-            'tr_headermutasi.np',
-            'tr_headermutasi.validated',
-            'tr_headermutasi.validated_by',
-           ) 
-           ->where('tr_detailmutasi.idstatus','=','2')
-           ->where('tr_headermutasi.id_transaksi','=',$id)->get(); 
-        //    dd($id);
-           $penerima=DB::table('tr_detailmutasi')
-           ->where('id_transaksi','=',$id)
-           ->where('idstatus','2')->first(); 
-        //    dd();
+        $dataEvaluasi=null;
+        $dataEvaluasi=DB::table('tr_daftar_jsea')
+        ->join('tr_evaluasi_jsea', 'tr_daftar_jsea.id', '=', 'tr_evaluasi_jsea.id_daftar')
+        ->join('md_kriteria', 'tr_evaluasi_jsea.kriteria', '=', 'md_kriteria.id')
+        ->where('tr_daftar_jsea.id','=',$id)->get();
 
-           $detailPenerima=DB::table('tbl_np')
-           ->where('np','=',$penerima->np)->first();
-           $detailPengawas=DB::table('tbl_np')
-           ->where('np','=',$dataFormulirLimbah[0]->validated_by)->first();
-           $detailPenyerah=DB::table('tbl_np')
-           ->where('np','=',$dataFormulirLimbah[0]->np)->first();
+        if($dataEvaluasi->count() == 0){
+            $dataEvaluasi=DB::table('tr_daftar_jsea')
+            ->join('tr_evaluasi_jsea', 'tr_daftar_jsea.id', '=', 'tr_evaluasi_jsea.id_daftar')
+            // ->join('md_kriteria', 'tr_evaluasi_jsea.status', '=', 'md_kriteria.id')
+            ->where('tr_evaluasi_jsea.id','=',$id)->get();
+            $dateNow=date('Y-m-d');  
+            $date=date('d');  
+            $year=date('Y');  
+    
+            $bln=Carbon::parse($dateNow)->formatLocalized('%B'); 
+            $datePermohonan=$date.' '.$bln.' '.$year; 
+            $pdf = PDF::loadview('formulir.form_approve',[
+                'dataEvaluasi'=>$dataEvaluasi,
+                'datePermohonan'=>$datePermohonan, 
+                
+            ])->setPaper('a4','portrait'); 
+            
+        }else{
+            $dateNow=date('Y-m-d');  
+            $date=date('d');  
+            $year=date('Y');  
+    
+            $bln=Carbon::parse($dateNow)->formatLocalized('%B'); 
+            $datePermohonan=$date.' '.$bln.' '.$year; 
+            $pdf = PDF::loadview('formulir.form',[
+                'dataEvaluasi'=>$dataEvaluasi,
+                'datePermohonan'=>$datePermohonan, 
+                
+            ])->setPaper('a4','portrait'); 
+        }
+        // dd($dataEvaluasi);
+       
+
+        // $dataFormulirLimbah=DB::table('tr_headermutasi')
+        //     ->join('tr_detailmutasi', 'tr_headermutasi.id', '=', 'tr_detailmutasi.idmutasi')
+        //     ->join('md_namalimbah', 'tr_headermutasi.idlimbah', '=', 'md_namalimbah.id')
+        //     ->join('md_penghasillimbah', 'tr_headermutasi.idasallimbah', '=', 'md_penghasillimbah.id')
+        //     ->join('md_jenislimbah', 'tr_headermutasi.idjenislimbah', '=', 'md_jenislimbah.id')
+        //     ->select('tr_headermutasi.no_surat',
+        //     'tr_headermutasi.created_at as tgldibuat',
+        //     'tr_headermutasi.jumlah',
+        //     'tr_headermutasi.keterangan',
+        //     'tr_headermutasi.maksud',
+        //     'md_jenislimbah.jenislimbah',
+        //     'md_namalimbah.namalimbah',
+        //     'md_penghasillimbah.seksi',
+        //     'tr_headermutasi.maksud',
+        //     'tr_headermutasi.np',
+        //     'tr_headermutasi.validated',
+        //     'tr_headermutasi.validated_by',
+        //    ) 
+        //    ->where('tr_detailmutasi.idstatus','=','2')
+        //    ->where('tr_headermutasi.id_transaksi','=',$id)->get(); 
+        // //    dd($id);
+        //    $penerima=DB::table('tr_detailmutasi')
+        //    ->where('id_transaksi','=',$id)
+        //    ->where('idstatus','2')->first(); 
+        // //    dd();
+
+        //    $detailPenerima=DB::table('tbl_np')
+        //    ->where('np','=',$penerima->np)->first();
+        //    $detailPengawas=DB::table('tbl_np')
+        //    ->where('np','=',$dataFormulirLimbah[0]->validated_by)->first();
+        //    $detailPenyerah=DB::table('tbl_np')
+        //    ->where('np','=',$dataFormulirLimbah[0]->np)->first();
 
         //    dd($penerima);
 
         // dd($dataFormulirLimbah);
-        $no_surat=$dataFormulirLimbah[0]->no_surat;
-        $tanggal=Carbon::parse($dataFormulirLimbah[0]->tgldibuat)->formatLocalized('%d %B %Y');
-        $jenislimbah=$dataFormulirLimbah[0]->jenislimbah;
-        $penghasillimbah=$dataFormulirLimbah[0]->seksi;
-        $dikirimke='Seksi Operasional Limbah';
-        $maksud=$dataFormulirLimbah[0]->maksud; 
-        $ttdPenerima=$penerima->np;
-        $ttdPengawas=$dataFormulirLimbah[0]->validated_by;
-        $ttdMenyerahkan=$dataFormulirLimbah[0]->np;
-        $listLimbah=$dataFormulirLimbah;
+        // $no_surat=$dataFormulirLimbah[0]->no_surat;
+        // $tanggal=Carbon::parse($dataFormulirLimbah[0]->tgldibuat)->formatLocalized('%d %B %Y');
+        // $jenislimbah=$dataFormulirLimbah[0]->jenislimbah;
+        // $penghasillimbah=$dataFormulirLimbah[0]->seksi;
+        // $dikirimke='Seksi Operasional Limbah';
+        // $maksud=$dataFormulirLimbah[0]->maksud; 
+        // $ttdPenerima=$penerima->np;
+        // $ttdPengawas=$dataFormulirLimbah[0]->validated_by;
+        // $ttdMenyerahkan=$dataFormulirLimbah[0]->np;
+        // $listLimbah=$dataFormulirLimbah;
         // dd($listLimbah);
 
-        $pdf = PDF::loadview('formulir.form',[
-            'no_surat'=>$no_surat,
-            'tanggal'=> $tanggal,
-            'jenislimbah'=> $jenislimbah,
-            'penghasil'=> $penghasillimbah,
-            'dikirimke'=> $dikirimke,
-            'maksud'=> $maksud,
-            'listlimbah'=>$listLimbah,
-            'ttdPenerima'=> $detailPenerima,
-            'ttdPengawas'=> $detailPengawas,
-            'ttdMenyerahkan'=> $detailPenyerah, 
-            
-        ])->setPaper('a4','portrait'); 
-        return $pdf->stream($no_surat.".pdf"); 
+      
+
+        
+        return $pdf->stream("evaluasi.pdf"); 
     }
 
 }
