@@ -15,8 +15,28 @@
             <h4 id='title_konfirmasi' class="modal-title">Dashboard</h4>
         </div>
         <div class="card-body">
-
-            @include('dashboard.banner')
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill"
+                            href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home"
+                            aria-selected="true">Summary</a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill"
+                            href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile"
+                            aria-selected="false">Grafik</a>
+                    </li> --}}
+    
+                </ul>
+            </div>
+            <div class="tab-content" id="custom-tabs-one-tabContent">
+                <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel"
+                    aria-labelledby="custom-tabs-one-home-tab">
+                     
+                        @include('dashboard.banner') 
+                </div>
+                
             @if (Auth::check())
             @role(['admin','pengadaan'])
             @include('dashboard.tbl_daftar_jsea')
@@ -32,12 +52,155 @@
 
 @endsection
 @section('scripts')
-{{-- <script src="{{ asset('/adminlte3/chartjs/Chart.bundle.min.js') }}"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/highcharts-more.js"></script> --}}
+<script src="{{ asset('/adminlte3/chartjs/Chart.bundle.min.js') }}"></script>
+
 
 <script>
     $(document).ready(function () {
+//         $('#period').datepicker({
+//             // uiLibrary: 'bootstrap4',
+//             // defaultDate: new Date(),
+//     format: "yyyy",
+//     viewMode: "years",
+//     minViewMode: "years",
+//     changeMonth: false,
+//         changeYear: true,
+// });
+
+ 
+        // $('#period').datepicker({
+        //     uiLibrary: 'bootstrap4',
+        //     todayHighlight: true,
+        //     format: "mm/yyyy",
+        //     defaultDate: new Date(),
+        //     viewMode: "months",
+        //     minViewMode: "months"
+        // });
+        // $('#period').val(moment().format('YYYY'))
+
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+        var chartBulan = new Chart(document.getElementById("permintaan"), {
+            type: 'bar',
+            data: {
+                labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli",
+                    "Agustus",
+                    "September", "Oktober", "November", "Desember"
+                ],
+                datasets: [{
+                        label: "Jumlah Permintaan",
+                        backgroundColor: "#ff5722",
+                        data: ''
+                    },
+                    {
+                        label: "Permintaan On Progress",
+                        backgroundColor: "#ff9800",
+                        data: ''
+                    },
+                    {
+                        label: "Permintaan Selesai",
+                        backgroundColor: "#4caf50",
+                        data: ''
+                    }
+
+                ]
+            },
+            options: {
+                scales: {
+            yAxes: [{
+                ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, values) {
+                        return value+' '+'Permintaan'
+                        
+                    },
+                    beginAtZero: true,
+                    stepSize: 5
+
+                }
+            }]
+        },
+                 
+                // tooltips: {
+                //     callbacks: {
+                //         // title: function (tooltipItem, data) {
+                //         //     return data['labels'][tooltipItem[0]['index']];
+                //         // },
+                //         label: function (tooltipItem, data) {
+                //             var formattedjumlah = data['datasets'][0]['data'][tooltipItem['index']]
+                //             console.log(namalimbah)
+                //             var finalValue = null
+                //             var satuan = null
+                //             if (namalimbah == 1 || namalimbah == 2 || namalimbah == 3 ||
+                //                 namalimbah == 17 || namalimbah == 20) {
+                //                 finalValue = parseInt(formattedjumlah) / parseInt(1000)
+                //                 satuan = 'm3'
+                //             } else {
+                //                 finalValue = parseInt(formattedjumlah) / parseInt(1000)
+                //                 satuan = 'ton'
+                //             }
+                //             return formattedjumlah + ' ' + satuan
+                //             // return data['datasets'];
+                //         },
+                //         // afterLabel: function (tooltipItem, data) {
+                //         //     var dataset = data['datasets'][0];
+
+
+                //         //     return "Presentase: " + '(' + dataset + '%)';
+                //         //     // return data;
+                //         // }
+                //     },
+
+                // }
+            }
+        });
+        $('#period').val(new Date().getFullYear()).change()
+        var paramData = {
+            period: $('#period').val() 
+        }
+        $('#period').on('change', function () {
+            namalimbah = $('#namalimbah').val()
+            var paramData = {
+                period: $('#period').val() 
+            }
+            getDataGrafik(paramData)
+            // updateChart(chart, value,paramData)
+
+        })
+        
+        getDataGrafik(paramData)
+
+        function getDataGrafik(paramData) {
+
+            $.ajax({
+                url: "{{ route('grafik.data') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    "accept": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                },
+                data: paramData,
+                dataType: "json",
+
+                success: function (data) {
+                    console.log(data)
+                    console.log(chartBulan.data.datasets)
+                     
+                    var dataJumlah = data.dataPermintaan
+                    var dataOnprogress = data.dataOnProgress
+                    var dataSelesai = data.dataSelesai
+
+                    chartBulan.data.datasets[0].data = dataJumlah
+                    chartBulan.data.datasets[1].data = dataOnprogress
+                    chartBulan.data.datasets[2].data = dataSelesai
+                    chartBulan.update();
+
+                }
+            });
+        }
         var table = $('#tbl_jsea').DataTable({
             processing: true,
             serverSide: true,
@@ -104,7 +267,7 @@
                 },
                 data: function (d) {
 
-                    d.tahun=new Date().getFullYear()
+                    d.tahun = new Date().getFullYear()
 
 
 
@@ -133,7 +296,7 @@
                 //     data: 'no_jsea',
                 //     name: 'no_jsea'
                 // },
-                
+
                 {
                     data: 'name',
                     name: 'name'
@@ -391,24 +554,25 @@
                         // toastr.success(data.success, 'Success', {
                         //     timeOut: 5000
                         // });
-                        var id_tender_db=data.id_tender_db
-                        var no_tender=data1[0].number
-                        var status_kirim=data.success
+                        var id_tender_db = data.id_tender_db
+                        var no_tender = data1[0].number
+                        var status_kirim = data.success
 
-                        sendMail(id_tender_db, no_tender,status_kirim,'#simpan')
-                       
-                    } 
+                        sendMail(id_tender_db, no_tender, status_kirim, '#simpan')
+
+                    }
                 }
             })
             $('#np').val('').change()
             $('#modalconfirm').modal('toggle')
         })
-        function sendMail(id_tender_db, no_tender,status_kirim,button){
-            var paramData={
-                id_tender:id_tender_db,
-                no_tender:no_tender,
-                unit_kerja:"k3",
-                
+
+        function sendMail(id_tender_db, no_tender, status_kirim, button) {
+            var paramData = {
+                id_tender: id_tender_db,
+                no_tender: no_tender,
+                unit_kerja: "k3",
+
             }
             $.ajax({
                 url: "{{ route('mail.send')}}",
@@ -416,27 +580,27 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: paramData, 
+                data: paramData,
                 beforeSend: function () {
                     $(button).text('mengirim email...');
                 },
                 success: function (data) {
                     var html = '';
-                    console.log(data) 
+                    console.log(data)
                     if (data.success) {
-                        toastr.success(data.success+" & "+status_kirim, 'Terkirim', {
+                        toastr.success(data.success + " & " + status_kirim, 'Terkirim', {
                             timeOut: 5000
-                        }); 
+                        });
                         $('#tbl_jsea').DataTable().ajax.reload();
                         // $('#simpan').text('Simpan');
                         $(button).text('Kirim');
-                        $('#modaldetail').modal('toggle'); 
+                        $('#modaldetail').modal('toggle');
 
-                        
+
                     }
 
                 }
-            }) 
+            })
         }
         var paramData = {
             tahun: new Date().getFullYear()
@@ -460,25 +624,31 @@
                 console.log(data)
                 $('#belumreview').text(data.dataBlmReview)
                 $('#jmlhpermintaan').text(data.dataPermintaan)
-                var persenApprove=Math.round(data.persenApprove)
-                var persenEvaluasi=Math.round(data.persenEvaluasi)
-                var persenTerima=Math.round(data.persenTerima)
-                
+                var persenApprove = Math.round(data.persenApprove)
+                var persenEvaluasi = Math.round(data.persenEvaluasi)
+                var persenTerima = Math.round(data.persenTerima)
+
                 // $('#openreview').text(data.dataOpenReview)
                 $('#onprogress').text(data.dataOnProgressReview)
                 $('#approve').text(data.dataApprove)
                 $('#evaluasi').text(data.dataEvaluasi)
-                $('#persenevaluasi').text(data.dataEvaluasi+' dari '+data.dataPermintaan)
-                $('#persenapprove').text(data.dataApprove+' dari '+data.dataPermintaan)
-                $('#persenterima').text(data.dataDiterima+' dari '+data.dataPermintaan)
-                
-                $('#progbarapprove').css({"width":persenApprove+"%"});
-                $('#progbarevaluasi').css({"width":persenEvaluasi+"%"});
-                $('#progbarterima').css({"width":persenTerima+"%"});
-                
+                $('#persenevaluasi').text(data.dataEvaluasi + ' dari ' + data.dataPermintaan)
+                $('#persenapprove').text(data.dataApprove + ' dari ' + data.dataPermintaan)
+                $('#persenterima').text(data.dataDiterima + ' dari ' + data.dataPermintaan)
+
+                $('#progbarapprove').css({
+                    "width": persenApprove + "%"
+                });
+                $('#progbarevaluasi').css({
+                    "width": persenEvaluasi + "%"
+                });
+                $('#progbarterima').css({
+                    "width": persenTerima + "%"
+                });
+
                 $('#openreview').text(data.dataOpenPermintaan)
-                
-                
+
+
                 $('#diterimapengadaan').text(data.dataDiterima)
 
 

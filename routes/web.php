@@ -23,6 +23,7 @@ Route::post('/dashboard/data', 'HomeController@dataTender')->name('dashboard.dat
 Route::post('/dashboard/banner', 'HomeController@dataBanner')->name('banner.data');
 Route::post('/tender/insert', 'HomeController@store')->name('tender.store');
 Route::post('/dashboard/banner1', 'HomeController@dataBanner')->name('notifikasi.data');
+Route::post('/dashboard/grafik', 'HomeController@dashboardGrafik')->name('grafik.data');
 
 Route::get('/evaluasi/daftar', 'EvaluasiController@viewEntri')->name('evaluasi.list');
 Route::get('/evaluasi/create_eval/{id}', 'EvaluasiController@viewEvaluasi')->name('evaluasi.buat');
