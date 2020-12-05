@@ -18,6 +18,7 @@ use PDF;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use PDO;
+use DateTime;
 
 class HomeController extends Controller
 {
@@ -56,6 +57,44 @@ class HomeController extends Controller
         // }
         //    dd($this->dataTender());
         return view('dashboard.dashboard');
+    }
+    public function dashboardGrafik(Request $request){
+// dd($request->period);
+        // $date=DateTime::createFromFormat("m/Y", $request->period);
+        
+        // $year=$date->format('Y');
+        $year=$request->period;
+        $dataPermintaan=[];
+        $dataOnProgress=[];
+        $dataFinish=[]; 
+
+        for($i=1;$i<=12;$i++){
+            $dataJumlahPermintaan[$i] = DB::table('tr_daftar_jsea') 
+                ->whereYear('tr_daftar_jsea.created_at', $year)
+                ->whereMonth('tr_daftar_jsea.created_at', $i)->count();
+
+            $dataOnProgressReview[$i] = DB::table('tr_daftar_jsea')
+            ->where('status_review', '2')
+            ->whereYear('tr_daftar_jsea.created_at', $year)
+            ->whereMonth('tr_daftar_jsea.created_at', $i)->count();
+
+            $dataSelesai[$i]= DB::table('tr_daftar_jsea')
+            ->where('status_review', '3')
+            // ->orWhere('status_review', '4')
+            ->whereYear('tr_daftar_jsea.created_at', $year)
+            ->whereMonth('tr_daftar_jsea.created_at', $i)->count();
+ 
+            array_push($dataPermintaan,$dataJumlahPermintaan[$i]);
+            array_push($dataOnProgress,$dataOnProgressReview[$i]);
+            array_push($dataFinish,$dataSelesai[$i]);
+
+        } 
+        return response()->json([
+            'dataPermintaan'=>$dataPermintaan,
+            'dataOnProgress'=>$dataOnProgress,
+            'dataSelesai'=>$dataFinish
+        ]);
+         
     }
 
     public function dataBanner(Request $request)
