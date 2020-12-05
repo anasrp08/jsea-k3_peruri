@@ -28,8 +28,10 @@ Route::post('/dashboard/grafik', 'HomeController@dashboardGrafik')->name('grafik
 Route::get('/evaluasi/daftar', 'EvaluasiController@viewEntri')->name('evaluasi.list');
 Route::get('/evaluasi/create_eval/{id}', 'EvaluasiController@viewEvaluasi')->name('evaluasi.buat');
 Route::get('/evaluasi/detail_tender/{id}', 'EvaluasiController@viewDetalEvaluasi')->name('evaluasi.detailjsea');
+Route::get('/evaluasi/destroy/{id}', 'EvaluasiController@destroy');
 
 Route::post('/evaluasi/data', 'EvaluasiController@index')->name('evaluasi.data'); 
+Route::post('/evaluasi/update_file', 'EvaluasiController@updateFile')->name('evaluasi.updatefile'); 
 Route::post('/evaluasi/detail_jsea', 'EvaluasiController@getDataTender')->name('evaluasi.detail_jsea'); 
 Route::post('/evaluasi/detail_evaluasi', 'EvaluasiController@showEvaluasi')->name('evaluasi.detail'); 
 Route::post('/evaluasi/update_evaluasi', 'EvaluasiController@updateEvaluasi')->name('evaluasi.update'); 

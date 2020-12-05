@@ -37,11 +37,14 @@
                     <form method="post" id="save_upload" enctype="multipart/form-data">
                       @csrf
                     <input type="file" class="float-right form-control" id='file_jsea' name="file_jsea" accept=".pdf" multiple />
-                     
+                    
                   <button type="submit" id="down_dok_jsea" class="float-right btn btn-primary"
                       value="Upload">Download</button>
                     
                      
+                  </li>
+                  <li class="list-group-item">
+                  <canvas id="pdfViewer" style='width:95%;'>
                   </li>
                   <li class="list-group-item">
                     <b>Evaluasi JSEA</b> 
@@ -83,3 +86,27 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
+
+
+<div id="confirmModal" class="modal fade" id="modal-info">
+    <div class="modal-dialog">
+      <div class="modal-content bg-danger">
+        <div class="modal-header">
+          <h4 class="modal-title">Konfirmasi Upload File JSEA</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <h5 align="center" style="margin:0;">Apakah File Yang Di Kirim Sudah benar ? </h5>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" name="ok_button" id="ok_button" class="btn btn-outline-light">Hapus</button>
+            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Batal</button>
+           
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>

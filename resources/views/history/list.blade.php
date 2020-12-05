@@ -26,6 +26,7 @@
 
     @include('history.f_filter')
     @include('history.tbl_daftar_jsea') 
+    @include('layouts.confimdelete') 
 
 
 </section>
@@ -49,13 +50,8 @@
             $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
         });
         var login = '<?php echo auth()->user()->name ?>'
-        console.log(login)
-        if(login=='Pengadaan'){
-            // $('#status').val()
-            // $('select[name="status"]').find('option[value="4"]').attr("selected", true).change();
-        }else if(login=='Unit K3'){
-            $('select[name="status"]').find('option[value="1"]').attr("selected", true).change();
-        }
+         
+       
         // var parseDataUser=JSON.parse(dataUser)
         // console.log(dataUser)
         // $('#kirim').on('click', function () {
@@ -234,14 +230,36 @@
 
                     }
                 },
+                // {
+                //     data: 'action',
+                //     name: 'action'
+                // }
 
 
-            ]
+            ],
+            drawCallback: function( settings ) {
+        var api = this.api();
+      
+        if(login=='Pengadaan'){ 
+
+        }else if(login=='Unit K3'){
+            $('.delete').hide()
+            $('.edit').hide()
+        }
+    }
         }); 
+      
+        if(login=='Pengadaan'){ 
+        }else if(login=='Unit K3'){
+            $('select[name="status"]').find('option[value="1"]').attr("selected", true).change();
+        }
         $('#cari').on('click', function () {
             $('#tbl_evaluasi').DataTable().ajax.reload();
         })
+       
+
  
+
         function goToReview(id) {
             var url = '{{ route("evaluasi.buat",":id")}}';
             url = url.replace(':id', id);

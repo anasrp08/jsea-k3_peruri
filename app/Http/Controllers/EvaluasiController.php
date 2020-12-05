@@ -83,6 +83,7 @@ class EvaluasiController extends Controller
         // dd($queryData);
         return view('history.detail_jsea', [
             'id_tender_db' => $id,
+            'status_review' =>$statusReview
             
             
 
@@ -175,7 +176,7 @@ class EvaluasiController extends Controller
                    
                 })
                 ->addIndexColumn()
-                // ->addColumn('action', 'action_butt_pemohon')
+                // ->addColumn('action', 'action_daftar_tender')
                 // ->rawColumns(['action'])
 
                 ->make(true);
@@ -570,6 +571,43 @@ class EvaluasiController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // dd($id);
+        $data = DB::table('tr_daftar_jsea')->where('id',$id)
+        ->where('status_review','1');
+        $data->delete();
+        return response()->json(['success' => 'Data Berhasil Di Hapus']);
+    }
+    public function updateFile(Request $request)
+    {
+        $path_file = AppHelper::pathFile('File Jsea', date('Y'));
+
+        $pathToDB = null;
+        if ($request->hasFile('file_jsea')) {
+            if (!File::exists($path_file)) {
+                File::makeDirectory($path_file, $mode = 0777, true, true);
+            }
+            $upload_file = $request->file('file_jsea');
+
+            // $extension=$upload_file->getClientOriginalName(); 
+            $filename_jsea = $upload_file->getClientOriginalName();
+            $upload_file->move($path_file, $filename_jsea);
+            $pathToDB = AppHelper::savePath('File Jsea', date('Y'), $filename_jsea);
+        }
+
+        $dataTender = array(
+ 
+            'path_file'         =>  $pathToDB,
+             
+            'updated_at'        =>  date('Y-m-d')
+            
+
+        );
+        
+        try {
+            $updateFile = DB::table('tr_daftar_jsea')->where('id',$request->idTender)->update($dataTender, true);
+            return response()->json(['success' => 'Data Berhasil Di Simpan']);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Data Gagal Disimpan']);
+        }
     }
 }

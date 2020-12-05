@@ -23,10 +23,54 @@
     <div class="container-fluid">
         <div class="row">
             @include('history.f_detail_jsea')
+            @include('layouts.confimdelete')
             <!-- /.col -->
         </div>
         <!-- /.row -->
     </div><!-- /.container-fluid -->
+    <div class="modal fade" id="modaledit">
+  <div class="modal-dialog modal-lg" style="width:70%;">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Upload File</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body"> 
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                 
+                <ul class="list-group list-group-unbordered mb-3">
+                   
+                  <li class="list-group-item">
+                    <b>Dokumen JSEA</b>
+                    <form method="post" id="edit_upload" enctype="multipart/form-data">
+                      @csrf
+                    <input type="file" class="float-right form-control" id='file_jsea' name="file_jsea" accept=".pdf" multiple />
+                    <input type="hidden" id='idTender' name='idTender' value='{{$id_tender_db}}'/>
+                   
+                    
+                     
+                  </li>
+                  <li class="list-group-item">
+                  <canvas id="pdfViewer" style='width:95%;'>
+                  </li>
+                   
+                   
+
+                <button  class="btn btn-primary btn-block" id='simpan'><b>Simpan</b></button>
+              </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+                   
+        
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 </section>
 
 
@@ -44,10 +88,88 @@
 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-
+<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script>
     $(document).ready(function () {
-         
+        var pdfjsLib = window['pdfjs-dist/build/pdf'];
+// The workerSrc property shall be specified.
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+
+$("#file_jsea").on("change", function(e){
+	var file = e.target.files[0]
+	if(file.type == "application/pdf"){
+		var fileReader = new FileReader();  
+		fileReader.onload = function() {
+			var pdfData = new Uint8Array(this.result);
+			// Using DocumentInitParameters object to load binary data.
+			var loadingTask = pdfjsLib.getDocument({data: pdfData});
+			loadingTask.promise.then(function(pdf) {
+			  console.log('PDF loaded');
+			  
+			  // Fetch the first page
+			  var pageNumber = 1;
+			  pdf.getPage(pageNumber).then(function(page) {
+				console.log('Page loaded');
+				
+				var scale = 1.5;
+				var viewport = page.getViewport({scale: scale});
+
+				// Prepare canvas using PDF page dimensions
+				var canvas = $("#pdfViewer")[0];
+				var context = canvas.getContext('2d');
+				canvas.height = viewport.height;
+				canvas.width = viewport.width;
+
+				// Render PDF page into canvas context
+				var renderContext = {
+				  canvasContext: context,
+				  viewport: viewport
+				};
+				var renderTask = page.render(renderContext);
+				renderTask.promise.then(function () {
+				  console.log('Page rendered');
+				});
+			  });
+			}, function (reason) {
+			  // PDF loading error
+			  console.error(reason);
+			});
+		};
+		fileReader.readAsArrayBuffer(file);
+	}
+});
+          var idRow
+          var idTender=$('#idTender').val()
+        $('.delete').on('click', function () {
+            $('#confirmModal').modal()
+        })
+        $('.edit').on('click', function () {
+            $('#modaledit').modal()
+        })
+        
+        // $('.delete').prop('disabled',true)
+        $('.edit').prop('disabled',false)
+        if($('#status_review').val() =='1'){
+            $('.delete').prop('disabled',false)
+            $('.edit').prop('disabled',false)
+        }
+        $('#ok_button').on('click', function () {
+            $.ajax({
+                url: "/evaluasi/destroy/" + idTender,
+                beforeSend: function () {
+                    $('#ok_button').text('Deleting...');
+                },
+                success: function (data) {
+                    toastr.success(data.success, 'Terhapus', {
+                        timeOut: 5000
+                    });
+                    setTimeout(function () {
+                        var url = "{{ route('evaluasi.list') }}"; 
+                        document.location.href = url;
+                    }, 2000);
+                }
+            })
+        })
 
 
         $('.textarea').summernote({
@@ -64,7 +186,7 @@
                 ['height', ['height']]
             ]
         }) 
-        var idTender=$('#idTender').val()
+       
         getDataTender()
         
         function setDataEvaluasi(dataEvaluasi) { 
@@ -218,7 +340,44 @@
 
             document.location.href = url;
         })
+        
+        $('#edit_upload').on('submit', function (event) {
+            event.preventDefault(); 
+            var form = new FormData(this)  
+            url = "{{ route('evaluasi.updatefile') }}"
+            $.ajax({
+                url: url,
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: form,
+                contentType: false, 
+                processData: false, 
+                beforeSend: function () {
+                    $('#simpan').text('proses menyimpan...');
+                },
+                success: function (data) { 
+                    if (data.errors) {
 
+                        toastr.success(data.errors, 'Gagal Update', {
+                            timeOut: 5000
+                        });
+                    }
+                    if (data.success) {
+                        toastr.success(data.success, 'Berhasil', {
+                            timeOut: 5000
+                        }); 
+                        setTimeout(function () {
+                        location.reload()
+                    }, 2000);
+
+                    }
+                }
+            })
+            $('#np').val('').change()
+            $('#modalconfirm').modal('toggle')
+        })
 
 
         $('#send').on('click', function (event) {

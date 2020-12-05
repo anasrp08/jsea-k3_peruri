@@ -21,11 +21,9 @@
                         <th>Tgl. Dibuat</th>
                         <th>Tgl. Update</th>
                         <th>Vendor</th>  
-                        {{-- <th>File</th>
-                        <th>Doc. Upload</th> --}}
-                        <th>Status Review</th>
-                        {{-- <th>Action</th> --}}
-                        {{-- <th>Action</th> --}}
+                   
+                        <th>Status Review</th> 
+                        <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                  

@@ -155,7 +155,8 @@ class HomeController extends Controller
     }
     public static function dataFromEproc($request)
     {
-        $dataEproc = DB::connection('pgsql')->table('prcmts')
+        try {
+            $dataEproc = DB::connection('pgsql')->table('prcmts')
             ->join('prcmt_participants', 'prcmts.id', 'prcmt_participants.prcmt_id')
             ->join('vendors', 'prcmt_participants.vendor_id', 'vendors.id')
             ->join('parties', 'vendors.party_id', 'parties.id')
@@ -206,6 +207,11 @@ class HomeController extends Controller
         });
 
         return $dataEproc;
+            
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Terjadi Kesalahan sistem','message'=>$e]);
+        }
+        
     }
     public function dataTender(Request $request)
     {

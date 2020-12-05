@@ -1,5 +1,13 @@
-<div class="col-md-4">
 
+<div class="col-md-4">
+<button href="javascript:void(0);"  name="edit" id="edit" data-toggle="tooltip" data-original-title="Edit"
+  class="edit btn btn-primary" disabled>
+ Edit
+</button>
+<button href="javascript:void(0);"   name="delete" id="delete" data-toggle="tooltip" data-original-title="Delete"
+  class="delete btn btn-danger" disabled>
+Delete
+</button>
     <!-- Profile Image -->
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
@@ -43,6 +51,7 @@
                   </li>
                   
                   <input type="hidden" id='idTender' name='idTender' value='{{$id_tender_db}}'/>
+                  <input type="hidden" id='status_review' name='status_review' value='{{$status_review}}'/>
                   <li class="list-group-item">
                   <div class="form-group"> 
                     <label>Nomor Pegawai Pemeriksa</label>
